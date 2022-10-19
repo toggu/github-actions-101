@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toggu-notes-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: toggu-notes-api
+  template:
+    metadata:
+      labels:
+        app: toggu-notes-api
+    spec:
+      imagePullSecrets:
+        - name: devops101registry-credentials
+      containers:
+        - name: notes-api
+          image: devops101registry.azurecr.io/toggu-notes-api:v0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: toggu-notes-api
+spec:
+  type: LoadBalancer
+  selector:
+    app: toggu-notes-api
+  ports:
+    - protocol: TCP
+      port: 80
